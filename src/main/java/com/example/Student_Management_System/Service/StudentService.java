@@ -1,6 +1,7 @@
 package com.example.Student_Management_System.Service;
 
 import com.example.Student_Management_System.Entity.Student;
+import com.example.Student_Management_System.Exception.EmailAlreadyExistsException;
 import com.example.Student_Management_System.Exception.StudentNotFoundException;
 import com.example.Student_Management_System.Repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,20 @@ public class StudentService {
     private StudentRepository repository;
 
     public Student createStudent(Student student){
+
+        if(repository.existsByEmail(student.getEmail())){
+            throw new EmailAlreadyExistsException("Student with email " + student.getEmail() + " already exists");
+        }
         return repository.save(student);
     }
 
     public List<Student> getAllStudents(){
-        return repository.findAll();
+       List<Student>allStudents=repository.findAll();
+       if(allStudents.isEmpty()) {
+           throw new StudentNotFoundException("No students found");
+       }
+         return allStudents;
+
     }
 
     public Student getStudentById(Long id){
@@ -42,4 +52,8 @@ public class StudentService {
                 new StudentNotFoundException("Student not found with id: " + id));
         repository.delete(student);
     }
+
+
+
+
 }

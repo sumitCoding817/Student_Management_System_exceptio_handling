@@ -6,7 +6,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,23 +26,13 @@ public class StudentController {
     @GetMapping
     public ResponseEntity<List<Student>>getAllStudents(){
         List<Student> allStudents = service.getAllStudents();
-
-        if(allStudents.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
         return new ResponseEntity<>(allStudents, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Student> getStudentById(@PathVariable Long id){
-        Student studentById = service.getStudentById(id);
-
-        if(studentById != null){
-            return new ResponseEntity<>(studentById, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
+        Student student = service.getStudentById(id);
+        return new ResponseEntity<>(student, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

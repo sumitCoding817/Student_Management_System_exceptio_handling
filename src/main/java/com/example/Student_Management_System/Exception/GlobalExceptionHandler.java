@@ -13,14 +13,29 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
+        ErrorResponse error = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage()
+        );
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(error);
+    }
+
     @ExceptionHandler
     public ResponseEntity<ErrorResponse>handleGenericException(Exception ex){
         ErrorResponse erors=new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Something went wrong"
+                ex.getMessage()
         );
-        return new ResponseEntity<>(erors,HttpStatus.INTERNAL_SERVER_ERROR);
+//        return new ResponseEntity<>(erors,HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(erors);
     }
 
     @ExceptionHandler(StudentNotFoundException.class)
@@ -32,7 +47,10 @@ public class GlobalExceptionHandler {
                 ex.getMessage()
         );
 
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+//        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(error);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -51,7 +69,11 @@ public class GlobalExceptionHandler {
                 errors
         );
 
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+//        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(error);
     }
+
 
 }
